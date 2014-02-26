@@ -222,16 +222,17 @@ if __name__ == '__main__':
         (user, token) = froblogin(getfrob(), "read")
         config = { "version":1 , "user":user, "token":token }  
 
-        # userdown is the user whose photos will be downloaded. By default userdown==user      
-        if args.user is not None:
-           config["userdown"]=args.user
-        else:
-           config["userdown"]=user
-
         # Save it for future use
         cache = open("touchr.frob.cache", "w")
         cPickle.dump(config, cache)
         cache.close()
+
+    # Config options that shouldn't be cached
+    # userdown is the user whose photos will be downloaded. By default userdown==user      
+    if args.user is not None:
+       config["userdown"]=args.user
+    else:
+       config["userdown"]=user
 
     # Now, construct a query for the list of photo sets
     url  = "http://api.flickr.com/services/rest/?method=flickr.photosets.getList"
