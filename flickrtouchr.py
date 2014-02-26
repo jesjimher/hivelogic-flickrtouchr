@@ -211,8 +211,6 @@ if __name__ == '__main__':
        print "Directory %s doesn't exist, please create" % args.directory
 
 
-    sys.exit(0)
-
     # First things first, see if we have a cached user and auth-token
     try:
         cache = open("touchr.frob.cache", "r")
