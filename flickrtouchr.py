@@ -25,6 +25,7 @@ import cPickle
 import md5
 import sys
 import os
+import argparse
 
 API_KEY       = "e224418b91b4af4e8cdb0564716fa9bd"
 SHARED_SECRET = "7cddb9c9716501a0"
@@ -198,11 +199,19 @@ def getphoto(id, token, filename):
 if __name__ == '__main__':
 
     # The first, and only argument needs to be a directory
+    parser=argparse.ArgumentParser(description="Mass downloader of Flickr photos. Using default options, it will download all your photos to the specified directory, in original size.")
+    parser.add_argument('directory',help="Directory where images will be saved")
+#    parser.add_argument('-u','--user',help="Flickr username to retrieve photos from. In flickr format, get it from http://idgettr.com",required=False)
+#    parser.add_argument('-a','--album',help="Album to retrieve. If not specified, retrieve all albums. Specified as photoset ID (last number in photoset URL)",required=False)
+    args=parser.parse_args()
+
     try:
-        os.chdir(sys.argv[1])
+       os.chdir(args.directory)
     except:
-        print "usage: %s directory" % sys.argv[0] 
-        sys.exit(1)
+       print "Directory %s doesn't exist, please create" % args.directory
+
+
+    sys.exit(0)
 
     # First things first, see if we have a cached user and auth-token
     try:
