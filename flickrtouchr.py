@@ -201,7 +201,7 @@ if __name__ == '__main__':
     # The first, and only argument needs to be a directory
     parser=argparse.ArgumentParser(description="Mass downloader of Flickr photos. Using default options, it will download all your photos to the specified directory, in original size.")
     parser.add_argument('directory',help="Directory where images will be saved")
-#    parser.add_argument('-u','--user',help="Flickr username to retrieve photos from. In flickr format, get it from http://idgettr.com",required=False)
+    parser.add_argument('-u','--user',help="Flickr username to retrieve photos from. In flickr format, get it from http://idgettr.com",required=False)
 #    parser.add_argument('-a','--album',help="Album to retrieve. If not specified, retrieve all albums. Specified as photoset ID (last number in photoset URL)",required=False)
     args=parser.parse_args()
 
@@ -222,6 +222,12 @@ if __name__ == '__main__':
         (user, token) = froblogin(getfrob(), "read")
         config = { "version":1 , "user":user, "token":token }  
 
+        # userdown is the user whose photos will be downloaded. By default userdown==user      
+        if args.user is not None:
+           config["userdown"]=args.user
+        else:
+           config["userdown"]=user
+
         # Save it for future use
         cache = open("touchr.frob.cache", "w")
         cPickle.dump(config, cache)
@@ -229,7 +235,7 @@ if __name__ == '__main__':
 
     # Now, construct a query for the list of photo sets
     url  = "http://api.flickr.com/services/rest/?method=flickr.photosets.getList"
-    url += "&user_id=" + config["user"]
+    url += "&user_id=" + config["userdown"]
     url  = flickrsign(url, config["token"])
 
     # get the result
