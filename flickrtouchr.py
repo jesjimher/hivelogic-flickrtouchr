@@ -202,7 +202,7 @@ if __name__ == '__main__':
     parser=argparse.ArgumentParser(description="Mass downloader of Flickr photos. Using default options, it will download all your photos to the specified directory, in original size.")
     parser.add_argument('directory',help="Directory where images will be saved")
     parser.add_argument('-u','--user',help="Flickr username to retrieve photos from. In flickr format, get it from http://idgettr.com",required=False)
-#    parser.add_argument('-a','--album',help="Album to retrieve. If not specified, retrieve all albums. Specified as photoset ID (last number in photoset URL)",required=False)
+    parser.add_argument('-a','--album',help="Album to retrieve. If not specified, retrieve all albums. Specified as photoset ID (last number in photoset URL)",required=False)
     args=parser.parse_args()
 
     try:
@@ -251,26 +251,30 @@ if __name__ == '__main__':
     urls = []
     for set in sets:
         pid = set.getAttribute("id")
-        dir = getText(set.getElementsByTagName("title")[0].childNodes)
-        dir = unicodedata.normalize('NFKD', dir.decode("utf-8", "ignore")).encode('ASCII', 'ignore') # Normalize to ASCII
+        # If --album option is set, download specified photoset only
+        if (args.album is None) or (pid==args.album):
+            dir = getText(set.getElementsByTagName("title")[0].childNodes)
+            dir = unicodedata.normalize('NFKD', dir.decode("utf-8", "ignore")).encode('ASCII', 'ignore') # Normalize to ASCII
 
-        # Build the list of photos
-        url   = "http://api.flickr.com/services/rest/?method=flickr.photosets.getPhotos"
-        url  += "&photoset_id=" + pid
+            # Build the list of photos
+            url   = "http://api.flickr.com/services/rest/?method=flickr.photosets.getPhotos"
+            url  += "&photoset_id=" + pid
 
-        # Append to our list of urls
-        urls.append( (url , dir) )
+            # Append to our list of urls
+            urls.append( (url , dir) )
     
     # Free the DOM memory
     dom.unlink()
 
-    # Add the photos which are not in any set
-    url   = "http://api.flickr.com/services/rest/?method=flickr.photos.getNotInSet"
-    urls.append( (url, "No Set") )
+    # If downloading all photos, add also photos which are not in any set
+    if args.album is None:
+        url   = "http://api.flickr.com/services/rest/?method=flickr.photos.getNotInSet"
+        urls.append( (url, "No Set") )
 
-    # Add the user's Favourites
-    url   = "http://api.flickr.com/services/rest/?method=flickr.favorites.getList"
-    urls.append( (url, "Favourites") )
+    # Add the user's Favourites (don't do it when downloading other user photos, or a specific photoset)
+    if (args.user is None) and (args.album is None):
+        url   = "http://api.flickr.com/services/rest/?method=flickr.favorites.getList"
+        urls.append( (url, "Favourites") )
 
     # Time to get the photos
     inodes = {}
