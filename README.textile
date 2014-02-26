@@ -2,13 +2,36 @@ A Python script to grab all your photos from flickr and dump them into a directo
 
 Original author is "Colm MacCárthaigh":http://www.stdlib.net/~colmmacc/.
 
-Changes include tweaks to download full-size original images and improvements in handling UTF8 file and photoset names.
+Dan Benjamin tweaked the script to download full-size original images and made improvements in handling UTF8 file and photoset names.
+
+This is yet another modified version that adds two command-line parameters to Dan/Colm's script:
+
+<pre>
+-u USER, --user USER  Flickr username to retrieve photos from. In flickr format, 
+                      can be calculated from a "human" username from http://idgettr.com
+
+-a ALBUM, --album ALBUM
+                      Album to retrieve. If not specified, retrieve all albums. Specified 
+                      as photoset ID (last number in photoset URL)
+</pre>
 
 Run it like this:
 
 <pre>
 mkdir FlickrBackupFolder
 python flickrtouchr.py FlickrBackupFolder
+</pre>
+
+or, to download images belonging to a certain user (and that you have permission to see, of course):
+<pre>python flickrtouchr.py -u 97192136@N12 FlickrBackupFolder
+</pre>
+
+or a specific photoset:
+<pre>python flickrtouchr.py -u 97192136@N12 -a 72552661214670443 FlickrBackupFolder
+</pre>
+
+or even both:
+<pre>python flickrtouchr.py -u 97192136@N12 -a 82353261514672343 FlickrBackupFolder
 </pre>
 
 You'll be prompted to authorize with Flickr, and then the magic happens.
