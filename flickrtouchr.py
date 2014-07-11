@@ -27,8 +27,8 @@ import sys
 import os
 import argparse
 
-API_KEY       = "e224418b91b4af4e8cdb0564716fa9bd"
-SHARED_SECRET = "7cddb9c9716501a0"
+API_KEY       = "f5042d1fdcd6faf62b5057a3f37d580a"
+SHARED_SECRET = "d5d9a37130b55b35"
 
 #
 # Utility functions for dealing with flickr authentication
@@ -49,7 +49,7 @@ def getfrob():
     hash   = md5.new(string).digest().encode("hex")
 
     # Formulate the request
-    url    = "http://api.flickr.com/services/rest/?method=flickr.auth.getFrob"
+    url    = "https://api.flickr.com/services/rest/?method=flickr.auth.getFrob"
     url   += "&api_key=" + API_KEY + "&api_sig=" + hash
 
     try:
@@ -79,7 +79,7 @@ def froblogin(frob, perms):
     hash   = md5.new(string).digest().encode("hex")
 
     # Formulate the request
-    url    = "http://api.flickr.com/services/auth/?"
+    url    = "https://api.flickr.com/services/auth/?"
     url   += "api_key=" + API_KEY + "&perms=" + perms
     url   += "&frob=" + frob + "&api_sig=" + hash
 
@@ -104,7 +104,7 @@ def froblogin(frob, perms):
     hash   = md5.new(string).digest().encode("hex")
     
     # Formulate the request
-    url    = "http://api.flickr.com/services/rest/?method=flickr.auth.getToken"
+    url    = "https://api.flickr.com/services/rest/?method=flickr.auth.getToken"
     url   += "&api_key=" + API_KEY + "&frob=" + frob
     url   += "&api_sig=" + hash
 
@@ -157,7 +157,7 @@ def flickrsign(url, token):
 def getphoto(id, token, filename):
     try:
         # Contruct a request to find the sizes
-        url  = "http://api.flickr.com/services/rest/?method=flickr.photos.getSizes"
+        url  = "https://api.flickr.com/services/rest/?method=flickr.photos.getSizes"
         url += "&photo_id=" + id
     
         # Sign the request
@@ -210,7 +210,6 @@ if __name__ == '__main__':
     except:
        print "Directory %s doesn't exist, please create" % args.directory
 
-
     # First things first, see if we have a cached user and auth-token
     try:
         cache = open("touchr.frob.cache", "r")
@@ -235,7 +234,7 @@ if __name__ == '__main__':
        config["userdown"]=user
 
     # Now, construct a query for the list of photo sets
-    url  = "http://api.flickr.com/services/rest/?method=flickr.photosets.getList"
+    url  = "https://api.flickr.com/services/rest/?method=flickr.photosets.getList"
     url += "&user_id=" + config["userdown"]
     url  = flickrsign(url, config["token"])
 
@@ -258,7 +257,7 @@ if __name__ == '__main__':
             dir = unicodedata.normalize('NFKD', dir.decode("utf-8", "ignore")).encode('ASCII', 'ignore') # Normalize to ASCII
 
             # Build the list of photos
-            url   = "http://api.flickr.com/services/rest/?method=flickr.photosets.getPhotos"
+            url   = "https://api.flickr.com/services/rest/?method=flickr.photosets.getPhotos"
             url  += "&photoset_id=" + pid
 
             # Append to our list of urls
@@ -269,12 +268,12 @@ if __name__ == '__main__':
 
     # If downloading all photos, add also photos which are not in any set
     if args.album is None:
-        url   = "http://api.flickr.com/services/rest/?method=flickr.photos.getNotInSet"
+        url   = "https://api.flickr.com/services/rest/?method=flickr.photos.getNotInSet"
         urls.append( (url, "No Set") )
 
     # Add the user's Favourites (don't do it when downloading other user photos, or a specific photoset)
     if (args.user is None) and (args.album is None):
-        url   = "http://api.flickr.com/services/rest/?method=flickr.favorites.getList"
+        url   = "https://api.flickr.com/services/rest/?method=flickr.favorites.getList"
         urls.append( (url, "Favourites") )
 
     # Time to get the photos
