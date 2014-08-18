@@ -257,12 +257,12 @@ if __name__ == '__main__':
             dir = getText(set.getElementsByTagName("title")[0].childNodes)
             dir = unicodedata.normalize('NFKD', dir.decode("utf-8", "ignore")).encode('ASCII', 'ignore') # Normalize to ASCII
 
-        # Build the list of photos
-        url   = "https://api.flickr.com/services/rest/?method=flickr.photosets.getPhotos"
-        url  += "&photoset_id=" + pid
+            # Build the list of photos
+            url   = "https://api.flickr.com/services/rest/?method=flickr.photosets.getPhotos"
+            url  += "&photoset_id=" + pid
 
-        # Append to our list of urls
-        urls.append( (url , dir) )
+            # Append to our list of urls
+            urls.append( (url , dir) )
     
     # Free the DOM memory
     dom.unlink()
